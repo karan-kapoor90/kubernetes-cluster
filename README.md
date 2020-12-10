@@ -10,10 +10,11 @@ A vagrant script for setting up a Kubernetes cluster using Kubeadm
 
 Note: This is for play and absolutely not intended for production use. These scripts come as is and are not entitled to any support or warranties whatsoever. While they are safe to run, use at your own discretion. 
 
-Clone this git repository using the git CLI or by [downloading the zip file]()on a machine where you'd like to run your VM's. 
+Clone this git repository using the git CLI or by [downloading the zip file](https://github.com/karan-kapoor90/kubernetes-cluster/archive/main.zip) on a machine where you'd like to run your VM's. 
 
 ```
-git clone
+git clone https://github.com/karan-kapoor90/kubernetes-cluster.git
+cd kubernetes-cluster
 ```
 
 Execute the following vagrant command to start a new Kubernetes cluster, this will start one master and two nodes:
@@ -56,22 +57,52 @@ Now choose a machine you want to ssh into. If you want to use the kubeclt cli an
 vagrant ssh k8s-head
 ```
 
-**BONUS**: additional configs for aliases and autocompletion installed in ~/.bash_profile
-- the alias `k` is already setup, so instead of typing `kubectl`, you can now type `k`
-- kubectl autocompletion is installed. Just hit tab to autocomplete commands
+### Helpful tips
 
-**BONUS**: kubectx, kubens and the interactive mode for the tools has also been setup. Try the command `kubens` and using the arrow keys to select the namespace you want to work in.
-Reference: https://github.com/ahmetb/kubectx 
+Perform the following on the k8s-head (master node) vm
+
+**kubectl helpers**
+
+Add an alias for kubectl (allows you to use `k` instead of `kubectl` when working with kubernetes), and enable autocomplete
+    
+```bash
+cat  >~/.bash_profile <<EOF
+alias k=kubectl 
+complete -F __start_kubectl k 
+source <(kubectl completion bash) 
+EOF
+source ~/.bash_profile
+```
+
+**kubectx and kubens**
+
+```bash
+wget https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubectx
+wget https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubens
+chmod +x kubectx kubens
+sudo mv kubectx /usr/local/bin/kubectx
+sudo mv kubens /usr/local/bin/kubens
+```
+
+**Installing interactive mode for kubectx and kubens**
+
+```bash
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+source ~/.bashrc
+```
 
 ## Clean-up
 
-Execute the following command to remove the virtual machines created for the Kubernetes cluster.
+Execute the following command to remove the virtual machines created for the Kubernetes cluster in the folder where the Vagrantfile is located.
 ```
-vagrant destroy -f
+vagrant destroy
 ```
 
 You can destroy individual machines by vagrant destroy k8s-node-1 -f
 
 ## Licensing
+
+Credit: Originally created and open sourced by https://github.com/ecomm-integration-ballerina/kubernetes-cluster/ 
 
 [Apache License, Version 2.0](http://opensource.org/licenses/Apache-2.0).

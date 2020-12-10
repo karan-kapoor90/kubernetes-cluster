@@ -67,25 +67,6 @@ EOF
     sudo sed -i "/^[^#]*KUBELET_EXTRA_ARGS=/c\KUBELET_EXTRA_ARGS=--node-ip=$IP_ADDR" /etc/default/kubelet
     sudo systemctl restart kubelet
 
-    # adding some aliases for kubectl, and enabling autocomplete
-    cat  > ~/.bash_profile <<EOF
-    alias k=kubectl 
-    complete -F __start_kubectl k 
-    source <(kubectl completion bash) 
-EOF
-    source ~/.bash_profile
-
-    # Setting up kubectx and kubens
-    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubectx
-    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubens
-    chmod +x kubectx kubens
-    sudo mv kubectx /usr/local/bin/kubectx
-    sudo mv kubens /usr/local/bin/kubens
-
-    # Installing interactive mode for kubectx and kubens
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-    ~/.fzf/install
-    source ~/.bashrc
 
     
 SCRIPT
