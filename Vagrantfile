@@ -66,6 +66,28 @@ EOF
     # set node-ip
     sudo sed -i "/^[^#]*KUBELET_EXTRA_ARGS=/c\KUBELET_EXTRA_ARGS=--node-ip=$IP_ADDR" /etc/default/kubelet
     sudo systemctl restart kubelet
+
+    # adding some aliases for kubectl, and enabling autocomplete
+    cat  > ~/.bash_profile <<EOF
+    alias k=kubectl 
+    complete -F __start_kubectl k 
+    source <(kubectl completion bash) 
+EOF
+    source ~/.bash_profile
+
+    # Setting up kubectx and kubens
+    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubectx
+    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubens
+    chmod +x kubectx kubens
+    sudo mv kubectx /usr/local/bin/kubectx
+    sudo mv kubens /usr/local/bin/kubens
+
+    # Installing interactive mode for kubectx and kubens
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install
+    source ~/.bashrc
+
+    
 SCRIPT
 
 $configureMaster = <<-SCRIPT
@@ -84,8 +106,8 @@ $configureMaster = <<-SCRIPT
 
     # install Calico pod network addon
     export KUBECONFIG=/etc/kubernetes/admin.conf
-    kubectl apply -f https://raw.githubusercontent.com/ecomm-integration-ballerina/kubernetes-cluster/master/calico/rbac-kdd.yaml
-    kubectl apply -f https://raw.githubusercontent.com/ecomm-integration-ballerina/kubernetes-cluster/master/calico/calico.yaml
+    curl https://docs.projectcalico.org/manifests/calico.yaml -O
+    kubectl apply -f calico.yaml -n kube-system
 
     kubeadm token create --print-join-command >> /etc/kubeadm_join_cmd.sh
     chmod +x /etc/kubeadm_join_cmd.sh
@@ -116,7 +138,7 @@ Vagrant.configure("2") do |config|
             config.vm.provider "virtualbox" do |v|
 
                 v.name = opts[:name]
-            	 v.customize ["modifyvm", :id, "--groups", "/Ballerina Development"]
+            	 v.customize ["modifyvm", :id, "--groups", "/Karan Kapoor k8s"]
                 v.customize ["modifyvm", :id, "--memory", opts[:mem]]
                 v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
 

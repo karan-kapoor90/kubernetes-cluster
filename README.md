@@ -8,6 +8,14 @@ A vagrant script for setting up a Kubernetes cluster using Kubeadm
 
 ## How to Run
 
+Note: This is for play and absolutely not intended for production use. These scripts come as is and are not entitled to any support or warranties whatsoever. While they are safe to run, use at your own discretion. 
+
+Clone this git repository using the git CLI or by [downloading the zip file]()on a machine where you'd like to run your VM's. 
+
+```
+git clone
+```
+
 Execute the following vagrant command to start a new Kubernetes cluster, this will start one master and two nodes:
 
 ```
@@ -33,6 +41,27 @@ servers = [
  ```
 
 As you can see above, you can also configure IP address, memory and CPU in the servers array. 
+
+## Connecting to the cluster
+
+Get a list of the VM's that are provisioned by this vagrant file using 
+
+```
+vagrant status
+```
+
+Now choose a machine you want to ssh into. If you want to use the kubeclt cli and interact with the k8s cluster, ssh into the master using the command
+
+```
+vagrant ssh k8s-head
+```
+
+**BONUS**: additional configs for aliases and autocompletion installed in ~/.bash_profile
+- the alias `k` is already setup, so instead of typing `kubectl`, you can now type `k`
+- kubectl autocompletion is installed. Just hit tab to autocomplete commands
+
+**BONUS**: kubectx, kubens and the interactive mode for the tools has also been setup. Try the command `kubens` and using the arrow keys to select the namespace you want to work in.
+Reference: https://github.com/ahmetb/kubectx 
 
 ## Clean-up
 
