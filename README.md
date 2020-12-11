@@ -57,6 +57,12 @@ Now choose a machine you want to ssh into. If you want to use the kubeclt cli an
 vagrant ssh k8s-head
 ```
 
+To get out of the ssh session and go back to your own machine, type
+
+```
+exit
+```
+
 ### Helpful tips
 
 Perform the following on the k8s-head (master node) vm
@@ -91,6 +97,16 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 source ~/.bashrc
 ```
+
+## Stop the clusters
+
+To stop the running VM's, don't stop from the Virtualbox UI, instead use the following command after getting out of any of the kubernetes VM, from the host machine's terminal
+
+```
+vagrant halt
+```
+
+When you want to return, simple open a terminal where the Vagrantfile is located on your machine, and run `vagratn up`.
 
 ## Clean-up
 
